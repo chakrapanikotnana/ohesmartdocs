@@ -4,6 +4,15 @@ import zipfile
 from pathlib import Path
 
 from app.new import get_label_texts, get_label_positions, create_layout_pdf
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+font_path = os.path.join(BASE_DIR, "static", "fonts", "Roboto-Regular.ttf")
+
+pdfmetrics.registerFont(TTFont("Roboto", font_path))
 
 def generate_pdfs(df):
     temp_dir = Path(tempfile.mkdtemp())

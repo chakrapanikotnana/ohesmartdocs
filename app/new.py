@@ -16,8 +16,8 @@ INPUT_DIR = Path("input")
 OUTPUT_DIR = Path("pdfs")
 EXCEL_FILE = INPUT_DIR / "data.xlsx"
 IMAGE_FILE = INPUT_DIR / "Drawing1.png"
-PDF_FONT_NAME = "ArialNarrow"
-PDF_FONT_FALLBACK = "Helvetica"
+PDF_FONT_NAME = "Roboto"
+PDF_FONT_FALLBACK = "Roboto"
 PDF_FONT_FAMILY = [
     (
         "ArialNarrow",
