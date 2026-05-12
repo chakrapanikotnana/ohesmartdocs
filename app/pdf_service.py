@@ -14,7 +14,11 @@ font_path = os.path.join(BASE_DIR, "static", "fonts", "Roboto-Regular.ttf")
 
 pdfmetrics.registerFont(TTFont("Roboto", font_path))
 
-def generate_pdfs(df):
+def generate_pdfs(df, header_title=None, header_values=None):
+    header_values = dict(header_values or {})
+    if header_title and not header_values.get("header_title"):
+        header_values["header_title"] = header_title
+
     temp_dir = Path(tempfile.mkdtemp())
     output_files = []
 
@@ -42,14 +46,14 @@ def generate_pdfs(df):
 
             output_pdf = temp_dir / f"{file_name}.pdf"
 
-            
             create_layout_pdf(
-            output_pdf,
-            image_path,
-            get_label_texts(row),
-            row,
-            get_label_positions(row)
-)
+                output_pdf,
+                image_path,
+                get_label_texts(row),
+                row,
+                get_label_positions(row),
+                header_values=header_values,
+            )
 
             output_files.append(output_pdf)
 

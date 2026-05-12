@@ -1,123 +1,75 @@
 body {
-  margin: 0;
+  min-height: 100vh;
   font-family: "Segoe UI", Tahoma, sans-serif;
   background: url("/static/images/bg.jpg") no-repeat center center fixed;
   background-size: cover;
 }
 
-/* Overlay for readability */
 body::before {
   content: "";
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: rgba(0, 0, 0, 0.55);
   z-index: -1;
 }
 
-/* Header */
-.header {
-  text-align: center;
-  color: white;
-  padding: 20px;
-  font-size: 28px;
-  font-weight: bold;
+.app-navbar {
+  background: rgba(12, 31, 56, 0.92);
+  backdrop-filter: blur(6px);
 }
 
-/* Card Container */
-.container {
-  width: 420px;
-  margin: 60px auto;
-  padding: 30px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.3);
+.navbar-brand {
+  font-size: clamp(1.15rem, 2vw, 1.75rem);
+  font-weight: 700;
+  white-space: normal;
 }
 
-/* Wider container for preview */
-.container-wide {
-  width: 800px;
+.app-card {
+  border: 0;
+  border-radius: 8px;
 }
 
-/* Titles */
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-/* Inputs */
-input[type="text"],
-input[type="password"],
-input[type="file"] {
-  width: 100%;
-  padding: 10px;
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-/* Buttons */
-button {
-  width: 100%;
+.demo-logins {
+  display: grid;
+  gap: 6px;
   padding: 12px;
-  margin-top: 15px;
-  background: #0d6efd;
-  color: white;
-  border: none;
+  background: #f6f8fa;
+  border: 1px solid #d8dee4;
   border-radius: 6px;
-  font-size: 15px;
-  cursor: pointer;
+  color: #24292f;
+  font-size: 0.95rem;
 }
 
-button:hover {
-  background: #0b5ed7;
+.table-responsive {
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+.form-label {
+  font-weight: 700;
+}
+@media (max-width: 575.98px) {
+  .app-navbar .container-fluid {
+    gap: 0.75rem;
+  }
+
+  .app-navbar .btn {
+    width: 100%;
+  }
 }
 
-/* Alerts */
-.error {
-  color: #d9534f;
-  margin-top: 10px;
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
 }
 
-.success {
-  color: #198754;
-  margin-top: 10px;
-}
-
-/* Table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-
-th,
-td {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  text-align: center;
-}
-
-th {
-  background: #f1f1f1;
-}
-
-/* Status */
-.status-ok {
-  color: green;
-  font-weight: bold;
-}
-
-.status-missing {
-  color: red;
-  font-weight: bold;
-}
-
-/* Links */
-a {
-  text-decoration: none;
-  color: #0d6efd;
-  font-size: 14px;
+.loading-text {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
 }

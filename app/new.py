@@ -10,9 +10,11 @@ from reportlab.platypus import (
     Flowable, SimpleDocTemplate, Table, TableStyle,
     Paragraph, Spacer,
 )
+import json
 import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+DRAWING_POSITIONS_FILE = BASE_DIR / "config" / "drawing_positions.json"
 INPUT_DIR = Path("input")
 OUTPUT_DIR = Path("pdfs")
 EXCEL_FILE = INPUT_DIR / "data.xlsx"
@@ -93,84 +95,29 @@ LABEL_POSITIONS = {
     "AA": {"x": 335, "y_offset": 397, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
 }
 
-# Add or override positions per drawing here. Keys are matched against the
-# Excel "Drawing" value without extension, so "Drawing2" and "Drawing2.png"
-# both use the "Drawing2" entry below.
-DRAWING_LABEL_POSITIONS = {
-    "Drawing1": LABEL_POSITIONS,
-    "Drawing2": {
-        **LABEL_POSITIONS,
-        "A": {"x": 187, "y_offset": 35,  "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "B": {"x": 185, "y_offset": 55,  "rotation": 0,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "C": {"x": 175, "y_offset": 90,  "rotation": 30,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "D": {"x": 170, "y_offset": 124,  "rotation":30,  "font_size": GENERAL_TEXT_FONT_SIZE},
-        "E": {"x": 250,  "y_offset": 124, "rotation": 0,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "F": {"x": 195, "y_offset": 148, "rotation": 0,  "font_size": GENERAL_TEXT_FONT_SIZE},
-        "G": {"x": 277, "y_offset": 102, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "H": {"x": 195,  "y_offset": 183, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "I": {"x": 195, "y_offset": 210, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "J": {"x": 348, "y_offset": 210, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "K": {"x": 275, "y_offset": 198, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "L": {"x": 162,  "y_offset": 267, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "M": {"x": 132,  "y_offset": 267, "rotation": 90,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "N": {"x": 119, "y_offset": 267, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "O": {"x": 117, "y_offset": 210, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "P": {"x": 109, "y_offset": 205, "rotation": 90,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "Q": {"x": 97, "y_offset": 195, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "R": {"x": 88, "y_offset": 267, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "S": {"x": 75, "y_offset": 200, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "T": {"x": 60, "y_offset": 267, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "U": {"x": 109, "y_offset": 55, "rotation": 90,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "V": {"x": 94, "y_offset": 283, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "W": {"x": 97, "y_offset": 315, "rotation": 90,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "X": {"x": 119, "y_offset": 320, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "Y": {"x": 193, "y_offset": 335, "rotation": 0,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "Z": {"x": 186, "y_offset": 345, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "AA": {"x": 176, "y_offset": 358, "rotation": 0,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "AB": {"x": 168, "y_offset": 368, "rotation": 0,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "AC": {"x": 160, "y_offset": 378, "rotation": 0,   "font_size": GENERAL_TEXT_FONT_SIZE},
-                
-    },
-    "Drawing3": {
-        **LABEL_POSITIONS,
-        # Add Drawing3-specific overrides here.
-        "A": {"x": 327, "y_offset": 50,  "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "B": {"x": 405, "y_offset": 72,  "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "C": {"x": 305, "y_offset": 77,  "rotation": 5,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "D": {"x": 305, "y_offset": 98,  "rotation": -30,  "font_size": GENERAL_TEXT_FONT_SIZE},
-        "E": {"x": 200, "y_offset": 118, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "F": {"x": 325, "y_offset": 127, "rotation": -35,  "font_size": GENERAL_TEXT_FONT_SIZE},
-        "G": {"x": 405, "y_offset": 128, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "H": {"x": 235, "y_offset": 146, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "I": {"x": 285, "y_offset": 158, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "J": {"x": 310, "y_offset": 190, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "K": {"x": 405, "y_offset": 198, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "L": {"x": 200, "y_offset": 210, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "M": {"x": 178, "y_offset": 222, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "N": {"x": 420, "y_offset": 225, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "O": {"x": 382, "y_offset": 232, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "P": {"x": 318, "y_offset": 233, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "Q": {"x": 432, "y_offset": 245, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "R": {"x": 327, "y_offset": 285, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "S": {"x": 438, "y_offset": 288, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "T": {"x": 343, "y_offset": 290, "rotation": 90,  "font_size": GENERAL_TEXT_FONT_SIZE},
-        "U": {"x": 413, "y_offset": 298, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "V": {"x": 377, "y_offset": 300, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "W": {"x": 377, "y_offset": 310, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "X": {"x": 416, "y_offset": 334, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "Y": {"x": 343, "y_offset": 340, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "Z": {"x": 305, "y_offset": 370, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "AA": {"x": 305, "y_offset": 390, "rotation": 0,    "font_size": GENERAL_TEXT_FONT_SIZE},
-        "AB": {"x": 200, "y_offset": 174, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "AC": {"x": 145, "y_offset": 158, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "AD": {"x": 143, "y_offset": 136, "rotation": 0,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "AE": {"x": 145, "y_offset": 110, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "AF": {"x": 60, "y_offset": 165, "rotation": 0,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "AG": {"x": 45, "y_offset": 136, "rotation": 0,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "AH": {"x": 5, "y_offset": 155, "rotation": 90,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        "AI": {"x": 195, "y_offset": 68, "rotation": 0,   "font_size": GENERAL_TEXT_FONT_SIZE},
-        },
-}
+def load_drawing_label_positions() -> dict:
+    if not DRAWING_POSITIONS_FILE.exists():
+        return {"Drawing1": LABEL_POSITIONS}
+
+    with DRAWING_POSITIONS_FILE.open("r", encoding="utf-8") as config_file:
+        configured_positions = json.load(config_file)
+
+    drawing_positions = {"Drawing1": LABEL_POSITIONS}
+    for drawing_key, overrides in configured_positions.items():
+        merged_positions = {
+            label: dict(position)
+            for label, position in LABEL_POSITIONS.items()
+        }
+        for label, position in overrides.items():
+            merged_positions[label] = {
+                "font_size": GENERAL_TEXT_FONT_SIZE,
+                **position,
+            }
+        drawing_positions[drawing_key] = merged_positions
+    return drawing_positions
+
+
+DRAWING_LABEL_POSITIONS = load_drawing_label_positions()
 
 # Gap between stacked sub-tables in the right panel (points)
 INTER_TABLE_GAP = 6
@@ -340,6 +287,18 @@ def make_vertical_paragraph(text: str, style) -> Paragraph:
 def add_wrap_points(text: str) -> str:
     parts = str(text or "").split("<br/>")
     return "<br/>".join(part.replace("/", "/ ") for part in parts)
+
+
+def get_header_value(header_values: dict, key: str, default: str = "") -> str:
+    if header_values is not None and key in header_values:
+        return str(header_values.get(key) or "")
+    return default
+
+
+def get_header_row_value(header_values: dict, key: str, row_data, column_name: str) -> str:
+    if header_values is not None and key in header_values:
+        return str(header_values.get(key) or "")
+    return get_excel_field(row_data, column_name)
 
 
 def get_table_paragraph_styles(
@@ -539,6 +498,8 @@ def create_layout_pdf(
     label_texts: dict,
     row_data,
     label_positions: dict = None,
+    header_title: str = None,
+    header_values: dict = None,
     nested_tables_data: list = None,   # ← now a LIST of table-data arrays
 ):
     """
@@ -550,6 +511,14 @@ def create_layout_pdf(
     """
     register_pdf_fonts()
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    header_values = dict(header_values or {})
+    if header_title and "header_title" not in header_values:
+        header_values["header_title"] = header_title
+    header_title = get_header_value(
+        header_values,
+        "header_title",
+        "GROUP No: DOUBLING CUM ELECTRIFICATION BETWEEN GUNTUR - TENALI SECTION K.M - 0.00 TO K.M - 25.00",
+    )
 
     if not image_path.exists():
         raise FileNotFoundError(f"Image file not found: {image_path}")
@@ -647,8 +616,8 @@ def create_layout_pdf(
 
     first_col_split = Table(
         [
-            [make_paragraph("VOLTRIO SOLUTIONS", top_data_style)],
-            [make_paragraph("Rail Vikas Nigam Limited", top_data_style)],
+            [make_paragraph(get_header_value(header_values, "company_line_1", "VOLTRIO SOLUTIONS"), top_data_style)],
+            [make_paragraph(get_header_value(header_values, "company_line_2", "Rail Vikas Nigam Limited"), top_data_style)],
         ],
         colWidths=[header_col_widths[0]],
         rowHeights=[header_second_row_height / 2] * 2,
@@ -665,9 +634,9 @@ def create_layout_pdf(
      
     second_col_split = Table(
     [
-        [make_paragraph("SUBMITTED", top_data_style)],
+        [make_paragraph(get_header_value(header_values, "submitted_title", "SUBMITTED"), top_data_style)],
         [make_paragraph("", top_data_style)],
-        [make_paragraph("For Voltrio Solutions", top_data_style)],
+        [make_paragraph("for "+ get_header_value(header_values, "company_line_1", "VOLTRIO SOLUTIONS"), top_data_style)],
     ],
     colWidths=[header_col_widths[1]],
     rowHeights=[
@@ -687,12 +656,12 @@ def create_layout_pdf(
     ]))
     third_col_split = Table(
     [
-        [make_paragraph("APPROVED S.E.D", top_data_style), "", ""],  # spans all 3
+        [make_paragraph(get_header_value(header_values, "approved_title", "APPROVED S.E.D"), top_data_style), "", ""],  # spans all 3
         [make_paragraph("", top_data_style), make_paragraph("", top_data_style), make_paragraph("", top_data_style)],
         [
-            make_paragraph("RE(Ele) / PMC / GNT", top_data_style),
-            make_paragraph("AM / E / RVNL / BZA", top_data_style),
-            make_paragraph("JGM / E / RVNL / BZA", top_data_style),
+            make_paragraph(get_header_value(header_values, "approved_signatory_1", "RE(Ele) / PMC / GNT"), top_data_style),
+            make_paragraph(get_header_value(header_values, "approved_signatory_2", "AM / E / RVNL / BZA"), top_data_style),
+            make_paragraph(get_header_value(header_values, "approved_signatory_3", "JGM / E / RVNL / BZA"), top_data_style),
         ],
     ],
     colWidths=[header_col_widths[2] / 3] * 3,
@@ -715,9 +684,9 @@ def create_layout_pdf(
     ]))
     fourth_col_split = Table(
     [
-        [make_paragraph("AS ERECTED", top_data_style)],
+        [make_paragraph(get_header_value(header_values, "as_erected_title", "AS ERECTED"), top_data_style)],
         [make_paragraph("", top_data_style)],
-        [make_paragraph("For ED/ Ele /RVNL / SC", top_data_style)],
+        [make_paragraph(get_header_value(header_values, "as_erected_footer", "For ED/ Ele /RVNL / SC"), top_data_style)],
     ],
     colWidths=[header_col_widths[3]],
     rowHeights=[
@@ -768,10 +737,10 @@ def create_layout_pdf(
 
     header_right_table = Table(
         [
-            [make_paragraph("SECTION", top_data_style), make_paragraph(get_excel_field(row_data, "SECTION"), top_data_style)],
-            [make_paragraph("LAYOUT No", top_data_style), make_paragraph(get_excel_field(row_data, "LAYOUT No"), top_data_style)],
-            [make_paragraph("CHAINAGE", top_data_style), make_paragraph(get_excel_field(row_data, "CHAINAGE"), top_data_style)],
-            [make_paragraph("WIND PRESSURE", top_data_style), make_paragraph(get_excel_field(row_data, "WIND PRESSURE"), top_data_style)],
+            [make_paragraph("SECTION", top_data_style), make_paragraph(get_header_row_value(header_values, "section", row_data, "SECTION"), top_data_style)],
+            [make_paragraph("LAYOUT No", top_data_style), make_paragraph(get_header_row_value(header_values, "layout_no", row_data, "LAYOUT No"), top_data_style)],
+            [make_paragraph("CHAINAGE", top_data_style), make_paragraph(get_header_row_value(header_values, "chainage", row_data, "CHAINAGE"), top_data_style)],
+            [make_paragraph("WIND PRESSURE", top_data_style), make_paragraph(get_header_row_value(header_values, "wind_pressure", row_data, "WIND PRESSURE"), top_data_style)],
         ],
         colWidths=[header_right_width / 2] * 2,
         rowHeights=[header_second_row_height / 4] * 4,
@@ -802,7 +771,7 @@ def create_layout_pdf(
 
     header_table = Table(
         [
-            [make_paragraph("GROUP No: DOUBLING CUM ELECTRIFICATION BETWEEN GUNTUR - TENALI SECTION K.M - 0.00 TO K.M - 25.00", top_first_row_style)],
+            [make_paragraph(header_title, top_first_row_style)],
             [header_second_row_layout],
         ],
         colWidths=[usable_width],
