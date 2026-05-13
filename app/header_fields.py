@@ -1,4 +1,12 @@
 from app.demo_data import get_demo_dataframe
+from app.auth import (
+    get_user_header_title,
+    get_user_company_line_1,
+    get_user_approved_signatory_1,
+    get_user_approved_signatory_2,
+    get_user_approved_signatory_3,
+    get_user_as_erected_footer,
+)
 
 
 HEADER_FIELDS = [
@@ -27,8 +35,31 @@ def _field_defaults() -> dict:
     return {field["name"]: field["default"] for field in HEADER_FIELDS}
 
 
+# Maps each header field name to its corresponding auth getter function.
+# This drives get_default_header_values so adding a new user field only
+# requires adding an entry here (plus the getter in auth.py).
+_USER_FIELD_GETTERS = {
+    "header_title": get_user_header_title,
+    "company_line_1": get_user_company_line_1,
+    "approved_signatory_1": get_user_approved_signatory_1,
+    "approved_signatory_2": get_user_approved_signatory_2,
+    "approved_signatory_3": get_user_approved_signatory_3,
+    "as_erected_footer": get_user_as_erected_footer,
+}
+
+
 def get_default_header_values(username: str, header_title: str = None) -> dict:
     values = _field_defaults()
+
+    # Populate every field from the logged-in user's auth data so each
+    # demo user sees their own defaults, not the hardcoded fallbacks.
+    for field_name, getter in _USER_FIELD_GETTERS.items():
+        user_value = getter(username)
+        if user_value:
+            values[field_name] = user_value
+
+    # An explicit header_title argument (e.g. from a previous form submission)
+    # takes precedence over the auth default.
     if header_title:
         values["header_title"] = header_title
 
