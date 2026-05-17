@@ -172,6 +172,29 @@ tbody tr:hover {
   .app-navbar .btn {
     width: 100%;
   }
+
+  .container {
+    max-width: 100%;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .form-label,
+  .sap-label {
+    font-size: 0.95rem;
+  }
+
+  .form-control,
+  .form-control-sm,
+  .form-select {
+    min-height: 44px;
+    padding: 0.6rem 0.75rem;
+    font-size: 16px;
+  }
+
+  .btn {
+    min-height: 44px;
+  }
 }
 
 /* Scroll only on tall-enough screens — was a broken nested @media */
@@ -203,6 +226,17 @@ tbody tr:hover {
 
 .sap-input {
   width: 100%;
+}
+
+@media (max-width: 575.98px) {
+  .sap-form-grid {
+    grid-template-columns: minmax(92px, 36%) minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .sap-input {
+    min-width: 0;
+  }
 }
 
 /* ─── Profile Dropdown ───────────────────────────── */
