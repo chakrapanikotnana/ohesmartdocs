@@ -1,4 +1,5 @@
 from fastapi import Request
+from user_agents import parse
 
 DEMO_USERS = {
     "demo1": {
@@ -32,6 +33,14 @@ DEMO_USERS = {
         "as_erected_footer": "For ED/ Ele /RVNL / EF",
     },
 }
+
+
+
+def is_mobile_device(user_agent: str):
+
+    ua = parse(user_agent)
+
+    return ua.is_mobile
 
 def validate_user(username: str, password: str) -> bool:
     user = DEMO_USERS.get(username)
