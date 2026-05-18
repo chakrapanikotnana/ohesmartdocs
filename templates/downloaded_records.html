@@ -63,11 +63,20 @@ Downloaded Records
                             <th>User</th>
                             <th>Created</th>
                             <th>Downloaded</th>
-                            <th>FileName</th>
-                            <th>Drawing</th>
-                            <th>Type</th>
-                            <th>Location No</th>
-                            <th>Mast type</th>
+                            <th>A</th>
+                            <th>B</th>
+                            <th>C</th>
+                            <th>D</th>
+                            <th>E</th>
+                            <th>F</th>
+                            <th>G</th>
+                            <th>H</th>
+                            <th>I</th>
+                            <th>J</th>
+                            <th>K</th>
+                            <th>L</th>
+                            <th>M</th>
+                            <th>N</th>
                         </tr>
                     </thead>
 
@@ -81,11 +90,20 @@ Downloaded Records
                             <td class="fw-medium">{{ r.username }}</td>
                             <td>{{ r.created_at }}</td>
                             <td>{{ r.downloaded_at or '-' }}</td>
-                            <td>{{ r.FileName or '-' }}</td>
-                            <td>{{ r.Drawing or '-' }}</td>
-                            <td>{{ r.Type or '-' }}</td>
-                            <td>{{ r['Location No'] or '-' }}</td>
-                            <td>{{ r['Mast type'] or '-' }}</td>
+                            <td>{{ '%.2f'|format(r.A|float) if r.A is not none and r.A != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r.B|float) if r.B is not none and r.B != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r.C|float) if r.C is not none and r.C != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r['D']|float) if r['D'] is not none and r['D'] != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r['E']|float) if r['E'] is not none and r['E'] != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r['F']|float) if r['F'] is not none and r['F'] != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r['G']|float) if r['G'] is not none and r['G'] != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r['H']|float) if r['H'] is not none and r['H'] != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r['I']|float) if r['I'] is not none and r['I'] != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r['J']|float) if r['J'] is not none and r['J'] != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r['K']|float) if r['K'] is not none and r['K'] != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r['L']|float) if r['L'] is not none and r['L'] != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r['M']|float) if r['M'] is not none and r['M'] != '' else '-' }}</td>
+                            <td>{{ '%.2f'|format(r['N']|float) if r['N'] is not none and r['N'] != '' else '-' }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
