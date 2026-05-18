@@ -56,9 +56,9 @@
                     <li class="nav-item">
 
                         <a class="nav-link
-                    {% if active_page == 'upload' %}
-                    active
-                    {% endif %}" href="/upload">
+                            {% if active_page == 'upload' %}
+                            active
+                            {% endif %}" href="/upload">
 
                             Generate PDFs
 
@@ -66,6 +66,19 @@
 
                     </li>
                     {% endif %}
+
+                    <li class="nav-item">
+
+                        <a class="nav-link
+                    {% if active_page == 'data-entry' %}
+                    active
+                    {% endif %}" href="/data-entry">
+
+                            Data Entry
+
+                        </a>
+
+                    </li>
 
                     {% if not request.session.get("is_mobile") %}
                     <li class="nav-item">
@@ -81,19 +94,6 @@
 
                     </li>
                     {% endif %}
-
-                    <li class="nav-item">
-
-                        <a class="nav-link
-                    {% if active_page == 'downloaded-records' %}
-                    active
-                    {% endif %}" href="/downloaded-records">
-
-                            Download Excel
-
-                        </a>
-
-                    </li>
 
                 </ul>
 
