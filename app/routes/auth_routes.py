@@ -54,6 +54,7 @@ def login(
         request.session["header_title"] = get_user_header_title(username)
 
         user_agent = request.headers.get("user-agent", "")
+        request.session["is_mobile"] = is_mobile_device(user_agent)
 
         if is_mobile_device(user_agent):
 

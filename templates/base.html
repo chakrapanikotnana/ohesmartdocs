@@ -52,6 +52,7 @@
 
                 <ul class="navbar-nav ms-4">
 
+                    {% if not request.session.get("is_mobile") %}
                     <li class="nav-item">
 
                         <a class="nav-link
@@ -64,19 +65,22 @@
                         </a>
 
                     </li>
+                    {% endif %}
 
+                    {% if not request.session.get("is_mobile") %}
                     <li class="nav-item">
 
                         <a class="nav-link
-                    {% if active_page == 'data-entry' %}
+                    {% if active_page == 'downloaded-records' %}
                     active
-                    {% endif %}" href="/data-entry">
+                    {% endif %}" href="/downloaded-records">
 
-                            Data Entry
+                            Download Excel
 
                         </a>
 
                     </li>
+                    {% endif %}
 
                     <li class="nav-item">
 
